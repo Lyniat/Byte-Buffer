@@ -22,8 +22,8 @@
 * SOFTWARE.
 */
 
-#include "memory.h"
-#include "buffer.h"
+#include "../include/bytebuffer/memory.h"
+#include "../include/bytebuffer/buffer.h"
 #include "komihash.h"
 
 #define LZAV_MALLOC( s, T ) (T*) ossp_malloc( s )

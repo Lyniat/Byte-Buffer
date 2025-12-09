@@ -1,6 +1,6 @@
 #include "memory_validation.cpp"
 
-#include <buffer.h>
+#include <../include/bytebuffer/buffer.h>
 #include <iostream>
 #include <ostream>
 #include <string>

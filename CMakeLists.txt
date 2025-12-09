@@ -13,7 +13,7 @@ add_library(${THIS_PROJECT_NAME} STATIC ${SRC})
 
 set_property(TARGET ${THIS_PROJECT_NAME} PROPERTY CXX_STANDARD 17)
 
-set_target_properties(${THIS_PROJECT_NAME} PROPERTIES OUTPUT_NAME "bb")
+set_target_properties(${THIS_PROJECT_NAME} PROPERTIES OUTPUT_NAME "bytebuffer")
 
 if (WIN32)
     if(NOT MSVC)
@@ -42,8 +42,8 @@ target_sources(${THIS_PROJECT_NAME} PUBLIC
         TYPE HEADERS
         BASE_DIRS include
         FILES
-        include/buffer.h
-        include/memory.h
+        include/bytebuffer/buffer.h
+        include/bytebuffer/memory.h
 )
 
 install(TARGETS ${THIS_PROJECT_NAME} FILE_SET public_headers)

@@ -1,6 +1,6 @@
 #include <cstring>
 
-#include "memory.h"
+#include "../include/bytebuffer/memory.h"
 
 size_t memory_allocations = 0;
 
