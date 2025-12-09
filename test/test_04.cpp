@@ -1,10 +1,8 @@
 #include "memory_validation.cpp"
 
-#include <../include/bytebuffer/buffer.h>
+#include "bytebuffer/buffer.h"
 #include <iostream>
 #include <ostream>
-#include <string>
-#include "content.h"
 
 using lyniat::memory::buffer::ByteBuffer;
 
