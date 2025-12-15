@@ -176,6 +176,30 @@ uint64_t ReadBuffer::Hash() {
     return komihash(ptr, b_size, 0);
 }
 
+bool ReadBuffer::Read(std::string* str){
+    if (current_read_pos < b_size) {
+        auto diff = b_size - current_read_pos;
+        auto read_ptr = (char*)ptr + current_read_pos;
+        auto len = strnlen(read_ptr, diff);
+        auto read_str = std::string(read_ptr, len);
+        current_read_pos += read_str.size() + 1;
+        *str = read_str;
+        return true;
+    }
+    return false;
+}
+
+bool ReadBuffer::ReadAt(size_t pos, std::string* str){
+    if (pos < b_size) {
+        auto diff = b_size - pos;
+        auto read_ptr = (char*)ptr + pos;
+        auto len = strnlen(read_ptr, diff);
+        *str = std::string(read_ptr, len);
+        return true;
+    }
+    return false;
+}
+
 bool ReadBuffer::ReadData(void* data, size_t size) {
     if (current_read_pos + size <= b_size) {
         memmove(data, (char*)ptr + current_read_pos, size);
@@ -194,6 +218,7 @@ bool ReadBuffer::ReadDataAt(size_t pos, void* data, size_t size) {
 }
 
 std::string ReadBuffer::to_string() {
-    return {(char*)ptr, b_size};
+    auto len = strnlen((char*)ptr, b_size);
+    return std::string((char*)ptr, len);
 }
 }

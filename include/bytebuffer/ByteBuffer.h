@@ -36,7 +36,11 @@ public:
     using ReadBuffer::ReadBuffer;
 
     bool Append(const std::string& data) {
-        return AppendData(data.c_str(), data.size());
+        if (AppendData(data.c_str(), data.size())) {
+            const uint8_t nt = '\0';
+            return AppendData(&nt, sizeof(nt));
+        }
+        return false;
     }
 
     template<typename T>

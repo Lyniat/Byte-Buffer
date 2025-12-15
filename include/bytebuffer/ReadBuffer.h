@@ -86,6 +86,8 @@ public:
 
     ~ReadBuffer();
 
+    bool Read(std::string* str);
+
     template<typename T>
     bool Read(T* data) {
         return ReadData(data, sizeof(T));
@@ -118,6 +120,8 @@ public:
         }
         return true;
     }
+
+    bool ReadAt(size_t pos, std::string* str);
 
     template<typename T>
     bool ReadAt(size_t pos, T* data) {
