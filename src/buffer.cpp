@@ -184,8 +184,16 @@ bool ByteBuffer::ReadOnly() {
     return read_only;
 }
 
-size_t ByteBuffer::CurrentPos() {
+size_t ByteBuffer::CurrentReadingPos() {
     return current_pos;
+}
+
+bool ByteBuffer::SetCurrentReadingPos(size_t pos) {
+    if (pos <= b_size) {
+        current_read_pos = pos;
+        return true;
+    }
+    return false;
 }
 
 bool ByteBuffer::Compress() {
@@ -286,6 +294,14 @@ bool ByteBuffer::ReadData(void* data, size_t size) {
     if (current_read_pos + size <= b_size) {
         memmove(data, (char*)ptr + current_read_pos, size);
         current_read_pos += size;
+        return true;
+    }
+    return false;
+}
+
+bool ByteBuffer::ReadDataAt(size_t pos, void* data, size_t size) {
+    if (pos + size <= b_size) {
+        memmove(data, (char*)ptr + pos, size);
         return true;
     }
     return false;

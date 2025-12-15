@@ -136,6 +136,27 @@ public:
         return SetDataAt(pos, data, size);
     }
 
+    template <typename T, std::enable_if_t<std::is_arithmetic_v<T>,int> = 0>
+    bool SetAtWithEndian(size_t pos, T data, Endianness endian) {
+        T converted;
+        switch (endian) {
+            case Host:
+                #if BB_CPU_ENDIAN_BIG
+                converted = bx::toHostEndian(data, false);
+                #else
+                converted = toHostEndian(data, true);
+                #endif
+                break;
+            case Little:
+                converted = toLittleEndian(data);
+                break;
+            case Big:
+                converted = toBigEndian(data);
+                break;
+        }
+        return SetDataAt(pos, &converted, sizeof(T));
+    }
+
     template<typename T>
     bool Read(T* data) {
         return ReadData(data, sizeof(T));
@@ -171,6 +192,16 @@ public:
         return true;
     }
 
+    template<typename T>
+    bool ReadAt(size_t pos, T* data) {
+        return ReadDataAt(pos, data, sizeof(T));
+    }
+
+    template<typename T>
+    bool ReadAt(size_t pos, T* data, size_t size) {
+        return ReadDataAt(pos, data, size);
+    }
+
     const std::byte* Data() const;
 
     std::byte* MutableData();
@@ -181,7 +212,9 @@ public:
 
     bool ReadOnly();
 
-    size_t CurrentPos();
+    size_t CurrentReadingPos();
+
+    bool SetCurrentReadingPos(size_t pos);
 
     bool Compress();
 
@@ -198,6 +231,7 @@ private:
     bool AppendData(const void* data, size_t size);
     bool SetDataAt(size_t pos, void* data, size_t size);
     bool ReadData(void* data, size_t size);
+    bool ReadDataAt(size_t pos, void* data, size_t size);
     size_t current_pos;
     bool free_memory;
     bool read_only;
