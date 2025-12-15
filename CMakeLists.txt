@@ -42,7 +42,8 @@ target_sources(${THIS_PROJECT_NAME} PUBLIC
         TYPE HEADERS
         BASE_DIRS include
         FILES
-        include/bytebuffer/buffer.h
+        include/bytebuffer/ByteBuffer.h
+        include/bytebuffer/ReadBuffer.h
         include/bytebuffer/memory.h
 )
 
