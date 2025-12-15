@@ -3,6 +3,7 @@
 #include "bytebuffer/buffer.h"
 #include <iostream>
 #include <ostream>
+#include "content.h"
 
 using lyniat::memory::buffer::ByteBuffer;
 
@@ -15,24 +16,6 @@ int main() {
     ByteBuffer* bb;
 
     bb = new ByteBuffer();
-
-    uint8_t a = 123;
-    int8_t b = -4;
-    uint16_t c = 7654;
-    int16_t d = -6543;
-    bool e = false;
-    bool f = true;
-    float g = 3.14f;
-    double h = 1.2345;
-
-    uint8_t _a;
-    int8_t _b;
-    uint16_t _c;
-    int16_t _d;
-    bool _e;
-    bool _f;
-    float _g;
-    double _h;
 
     bb->Append(a);
     bb->Append(b);
@@ -55,6 +38,7 @@ int main() {
         return 1;
     }
 
+    // NOLINTBEGIN(readability-braces-around-statements)
     if (!bb->Read(&_a)) return 1;
     if (!bb->Read(&_b)) return 1;
     if (!bb->Read(&_c)) return 1;
@@ -72,6 +56,7 @@ int main() {
     if (f != _f) return 1;
     if (g != _g) return 1;
     if (h != _h) return 1;
+    // NOLINTEND(readability-braces-around-statements)
 
     delete bb;
 

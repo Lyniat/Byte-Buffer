@@ -24,13 +24,53 @@
 
 #pragma once
 
+#include <limits>
+
+// Might be useful in future when porting to more platforms
+static_assert(std::numeric_limits<float>::is_iec559 && sizeof(float) == 4,
+              "Requires IEEE 754 binary32 (float)");
+static_assert(std::numeric_limits<double>::is_iec559 && sizeof(double) == 8,
+              "Requires IEEE 754 binary64 (double)");
+
+// https://github.com/bkaradzic/bx/blob/master/include/bx/inline/endian.inl
+// Endianness
+#define BB_CPU_ENDIAN_BIG    0
+#define BB_CPU_ENDIAN_LITTLE 0
+
+// CPU
+#define BB_CPU_ARM   0
+#define BB_CPU_X86   0
+
+// http://sourceforge.net/apps/mediawiki/predef/index.php?title=Architectures
+#if defined(__arm__)     \
+|| defined(__aarch64__) \
+|| defined(_M_ARM)
+#	undef  BB_CPU_ARM
+#	define BB_CPU_ARM 1
+#	undef  BB_CPU_ENDIAN_LITTLE
+#	define BB_CPU_ENDIAN_LITTLE 1
+#else
+#	undef  BB_CPU_X86
+#	define BB_CPU_X86 1
+#	undef  BB_CPU_ENDIAN_LITTLE
+#	define BB_CPU_ENDIAN_LITTLE 1
+#endif
+
 #include <cstddef>
 #include <cstdint>
 #include <string>
+#include "endian.inl"
 
 namespace lyniat::memory::buffer {
+using namespace lyniat::memory;
 class ByteBuffer {
 public:
+    enum Endianness {
+        Host,
+        Little,
+        Big,
+    };
+
     ByteBuffer();
 
     explicit ByteBuffer(size_t size);
@@ -65,6 +105,27 @@ public:
         return AppendData(data, size);
     }
 
+    template <typename T, std::enable_if_t<std::is_arithmetic_v<T>,int> = 0>
+    void AppendWithEndian(T data, Endianness endian) {
+        T converted;
+        switch (endian) {
+            case Host:
+#if BB_CPU_ENDIAN_BIG
+                converted = bx::toHostEndian(data, false);
+#else
+                converted = toHostEndian(data, true);
+#endif
+                break;
+            case Little:
+                converted = toLittleEndian(data);
+                break;
+            case Big:
+                converted = toBigEndian(data);
+                break;
+        }
+        AppendData(&converted, sizeof(T));
+    }
+
     template<typename T>
     bool SetAt(size_t pos, T data) {
         return SetDataAt(pos, &data, sizeof(T));
@@ -83,6 +144,31 @@ public:
     template<typename T>
     bool Read(T* data, size_t size) {
         return ReadData(data, size);
+    }
+
+    template <typename T, std::enable_if_t<std::is_arithmetic_v<T>,int> = 0>
+    bool ReadWithEndian(T* data, Endianness endian) {
+        T read;
+        auto result = Read(&read, sizeof(T));
+        if (!result) {
+            return false;
+        }
+        switch (endian) {
+            case Host:
+                #if BB_CPU_ENDIAN_BIG
+                *data = bx::toHostEndian(read, false);
+                #else
+                *data = toHostEndian(read, true);
+                #endif
+                break;
+            case Little:
+                *data = toLittleEndian(read);
+                break;
+            case Big:
+                *data = toBigEndian(read);
+                break;
+        }
+        return true;
     }
 
     const std::byte* Data() const;

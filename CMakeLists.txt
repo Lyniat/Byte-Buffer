@@ -53,26 +53,31 @@ if (BUILD_TESTING)
     enable_testing()
 
     add_executable(test_bb_01 test/test_01.cpp)
-    set_property(TARGET test_bb_01 PROPERTY CXX_STANDARD 17)
     target_link_libraries(test_bb_01 ${THIS_PROJECT_NAME})
     add_test(NAME "Test Byte Buffer 1"
             COMMAND test_bb_01)
 
     add_executable(test_bb_02 test/test_02.cpp)
-    set_property(TARGET test_bb_02 PROPERTY CXX_STANDARD 17)
     target_link_libraries(test_bb_02 ${THIS_PROJECT_NAME})
     add_test(NAME "Test Byte Buffer 2"
             COMMAND test_bb_02)
 
     add_executable(test_bb_03 test/test_03.cpp)
-    set_property(TARGET test_bb_03 PROPERTY CXX_STANDARD 17)
     target_link_libraries(test_bb_03 ${THIS_PROJECT_NAME})
     add_test(NAME "Test Byte Buffer 3"
             COMMAND test_bb_03)
 
     add_executable(test_bb_04 test/test_04.cpp)
-    set_property(TARGET test_bb_04 PROPERTY CXX_STANDARD 17)
     target_link_libraries(test_bb_04 ${THIS_PROJECT_NAME})
     add_test(NAME "Test Byte Buffer 4"
             COMMAND test_bb_04)
+
+    add_executable(test_bb_05 test/test_05.cpp)
+    target_link_libraries(test_bb_05 ${THIS_PROJECT_NAME})
+    add_test(NAME "Test Byte Buffer 5"
+            COMMAND test_bb_05)
+
+    set_target_properties(test_bb_01 test_bb_02 test_bb_03 test_bb_04 test_bb_05
+            PROPERTIES CXX_STANDARD 17
+            COMPILE_WARNING_AS_ERROR ON)
 endif()
