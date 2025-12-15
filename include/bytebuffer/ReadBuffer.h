@@ -57,13 +57,13 @@ static_assert(std::numeric_limits<double>::is_iec559 && sizeof(double) == 8,
 #endif
 
 #include <cstddef>
-#include <cstdint>
 #include <string>
 #include "endian.inl"
 
 namespace lyniat::memory::buffer {
 using namespace lyniat::memory;
-class ByteBuffer {
+
+class ReadBuffer {
 public:
     enum Endianness {
         Host,
@@ -71,91 +71,20 @@ public:
         Big,
     };
 
-    ByteBuffer();
+    ReadBuffer();
 
-    explicit ByteBuffer(size_t size);
+    explicit ReadBuffer(size_t size);
 
-    ByteBuffer(void* new_ptr, size_t size, bool copy = false);
+    ReadBuffer(void* new_ptr, size_t size, bool copy = false);
 
     // Rule of Five Implementation
-    ByteBuffer(const ByteBuffer& other);
-    ByteBuffer& operator=(const ByteBuffer& other);
-    ByteBuffer(ByteBuffer&& other) noexcept;
-    ByteBuffer& operator=(ByteBuffer&& other) noexcept;
+    ReadBuffer(const ReadBuffer& other);
+    ReadBuffer& operator=(const ReadBuffer& other);
+    ReadBuffer(ReadBuffer&& other) noexcept;
+    ReadBuffer& operator=(ReadBuffer&& other) noexcept;
 
 
-    ~ByteBuffer();
-
-    bool Append(const std::string& data) {
-        return AppendData(data.c_str(), data.size());
-    }
-
-    template<typename T>
-    bool Append(T data) {
-        return AppendData(&data, sizeof(T));
-    }
-
-    template<typename T>
-    bool Append(T* data, size_t size) {
-        return AppendData(data, size);
-    }
-
-    template<typename T>
-    bool Append(const T* data, size_t size) {
-        return AppendData(data, size);
-    }
-
-    template <typename T, std::enable_if_t<std::is_arithmetic_v<T>,int> = 0>
-    void AppendWithEndian(T data, Endianness endian) {
-        T converted;
-        switch (endian) {
-            case Host:
-#if BB_CPU_ENDIAN_BIG
-                converted = bx::toHostEndian(data, false);
-#else
-                converted = toHostEndian(data, true);
-#endif
-                break;
-            case Little:
-                converted = toLittleEndian(data);
-                break;
-            case Big:
-                converted = toBigEndian(data);
-                break;
-        }
-        AppendData(&converted, sizeof(T));
-    }
-
-    template<typename T>
-    bool SetAt(size_t pos, T data) {
-        return SetDataAt(pos, &data, sizeof(T));
-    }
-
-    template<typename T>
-    bool SetAt(size_t pos, T* data, size_t size) {
-        return SetDataAt(pos, data, size);
-    }
-
-    template <typename T, std::enable_if_t<std::is_arithmetic_v<T>,int> = 0>
-    bool SetAtWithEndian(size_t pos, T data, Endianness endian) {
-        T converted;
-        switch (endian) {
-            case Host:
-                #if BB_CPU_ENDIAN_BIG
-                converted = bx::toHostEndian(data, false);
-                #else
-                converted = toHostEndian(data, true);
-                #endif
-                break;
-            case Little:
-                converted = toLittleEndian(data);
-                break;
-            case Big:
-                converted = toBigEndian(data);
-                break;
-        }
-        return SetDataAt(pos, &converted, sizeof(T));
-    }
+    ~ReadBuffer();
 
     template<typename T>
     bool Read(T* data) {
@@ -167,7 +96,7 @@ public:
         return ReadData(data, size);
     }
 
-    template <typename T, std::enable_if_t<std::is_arithmetic_v<T>,int> = 0>
+    template<typename T, std::enable_if_t<std::is_arithmetic_v<T>, int> = 0>
     bool ReadWithEndian(T* data, Endianness endian) {
         T read;
         auto result = Read(&read, sizeof(T));
@@ -182,11 +111,9 @@ public:
                 *data = toHostEndian(read, true);
                 #endif
                 break;
-            case Little:
-                *data = toLittleEndian(read);
+            case Little: *data = toLittleEndian(read);
                 break;
-            case Big:
-                *data = toBigEndian(read);
+            case Big: *data = toBigEndian(read);
                 break;
         }
         return true;
@@ -202,34 +129,20 @@ public:
         return ReadDataAt(pos, data, size);
     }
 
-    const std::byte* Data() const;
-
-    std::byte* MutableData();
-
-    const std::byte* DataAt(size_t position) const;
-
     size_t Size();
 
     bool ReadOnly();
 
     size_t CurrentReadingPos();
 
-    bool SetCurrentReadingPos(size_t pos);
-
-    bool Compress();
-
-    bool Uncompress();
-
     uint64_t Hash();
 
     std::string to_string();
 
-private:
+protected:
     std::byte* ptr;
     size_t b_size;
     size_t b_length;
-    bool AppendData(const void* data, size_t size);
-    bool SetDataAt(size_t pos, void* data, size_t size);
     bool ReadData(void* data, size_t size);
     bool ReadDataAt(size_t pos, void* data, size_t size);
     size_t current_pos;

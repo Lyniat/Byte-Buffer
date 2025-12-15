@@ -22,17 +22,16 @@
 * SOFTWARE.
 */
 
+#include "bytebuffer/ReadBuffer.h"
 #include "bytebuffer/memory.h"
-#include "bytebuffer/buffer.h"
 #include "komihash.h"
 
-#define LZAV_MALLOC( s, T ) (T*) ossp_malloc( s )
-#define LZAV_FREE( p ) ossp_free( p )
-#include "lzav.h"
+#include <iostream>
+#include <ostream>
 
 namespace lyniat::memory::buffer {
 
-ByteBuffer::ByteBuffer() {
+ReadBuffer::ReadBuffer() {
     ptr = nullptr;
     b_size = 0;
     b_length = 0;
@@ -42,7 +41,7 @@ ByteBuffer::ByteBuffer() {
     read_only = false;
 }
 
-ByteBuffer::ByteBuffer(void* new_ptr, size_t size, bool copy) {
+ReadBuffer::ReadBuffer(void* new_ptr, size_t size, bool copy) {
     ptr = nullptr;
     b_size = 0;
     b_length = 0;
@@ -64,7 +63,7 @@ ByteBuffer::ByteBuffer(void* new_ptr, size_t size, bool copy) {
 }
 
 // copy constructor
-ByteBuffer::ByteBuffer(const ByteBuffer& b) {
+ReadBuffer::ReadBuffer(const ReadBuffer& b) {
     b_size = b.b_size;
     b_length = b.b_size;
     ptr = (std::byte*)ossp_malloc(b_size);
@@ -75,7 +74,7 @@ ByteBuffer::ByteBuffer(const ByteBuffer& b) {
     read_only = false;
 }
 
-ByteBuffer& ByteBuffer::operator=(const ByteBuffer& other) {
+ReadBuffer& ReadBuffer::operator=(const ReadBuffer& other) {
     if (this == &other) {
         return *this;
     }
@@ -104,7 +103,7 @@ ByteBuffer& ByteBuffer::operator=(const ByteBuffer& other) {
     return *this;
 }
 
-ByteBuffer::ByteBuffer(ByteBuffer&& other) noexcept
+ReadBuffer::ReadBuffer(ReadBuffer&& other) noexcept
     : ptr(other.ptr)
       , b_size(other.b_size)
       , b_length(other.b_length)
@@ -119,7 +118,7 @@ ByteBuffer::ByteBuffer(ByteBuffer&& other) noexcept
     // positions are not relevant for empty buffer
 }
 
-ByteBuffer& ByteBuffer::operator=(ByteBuffer&& other) noexcept {
+ReadBuffer& ReadBuffer::operator=(ReadBuffer&& other) noexcept {
     if (this == &other) {
         return *this;
     }
@@ -145,7 +144,7 @@ ByteBuffer& ByteBuffer::operator=(ByteBuffer&& other) noexcept {
 }
 
 
-ByteBuffer::ByteBuffer(size_t size) {
+ReadBuffer::ReadBuffer(size_t size) {
     ptr = (std::byte*)ossp_malloc(size);
     b_size = size;
     b_length = size;
@@ -155,142 +154,29 @@ ByteBuffer::ByteBuffer(size_t size) {
     read_only = false;
 }
 
-ByteBuffer::~ByteBuffer() {
+ReadBuffer::~ReadBuffer() {
     if (free_memory) {
         ossp_free(ptr);
     }
 }
 
-const std::byte* ByteBuffer::Data() const {
-    return ptr;
-}
-
-std::byte* ByteBuffer::MutableData() {
-    return ptr;
-}
-
-const std::byte* ByteBuffer::DataAt(size_t position) const {
-    if (position >= b_size) {
-        return nullptr;
-    }
-    return (std::byte*)((char*)ptr + position);
-}
-
-size_t ByteBuffer::Size() {
+size_t ReadBuffer::Size() {
     return b_size;
 }
 
-bool ByteBuffer::ReadOnly() {
+bool ReadBuffer::ReadOnly() {
     return read_only;
 }
 
-size_t ByteBuffer::CurrentReadingPos() {
+size_t ReadBuffer::CurrentReadingPos() {
     return current_pos;
 }
 
-bool ByteBuffer::SetCurrentReadingPos(size_t pos) {
-    if (pos <= b_size) {
-        current_read_pos = pos;
-        return true;
-    }
-    return false;
-}
-
-bool ByteBuffer::Compress() {
-    auto max_len = lzav_compress_bound(b_size);
-    auto c_data = ossp_malloc(max_len);;
-    int comp_len = lzav_compress_default(ptr, c_data, b_size, max_len);
-    if (comp_len < 0) {
-        ossp_free(c_data);
-        return false;
-    }
-    if (free_memory) {
-        ossp_free(ptr);
-    }
-    auto final_len = comp_len + sizeof(uint32_t);
-    auto final_ptr = (char*)ossp_malloc(final_len);
-    memmove(final_ptr + (sizeof(uint32_t)), c_data, comp_len);
-    ossp_free(c_data);
-    ((uint32_t*)final_ptr)[0] = b_size;
-
-    b_size = final_len;
-    b_length = final_len;
-    free_memory = true;
-    ptr = (std::byte*)final_ptr;
-    return true;
-}
-
-bool ByteBuffer::Uncompress() {
-    auto decomp_len = (int)((uint32_t*)ptr)[0];
-    void* decomp_buf = (char*)ossp_malloc(decomp_len);
-    void* data_start = ((char*)ptr) + sizeof(uint32_t);
-    int l = lzav_decompress(data_start, decomp_buf, b_size - sizeof(uint32_t), decomp_len);
-    if (l < 0) {
-        //problem?
-        ossp_free(decomp_buf);
-        return false;
-    }
-    if (free_memory) {
-        ossp_free(ptr);
-    }
-    ptr = (std::byte*)decomp_buf;
-    b_size = l;
-    b_length = l;
-    free_memory = true;
-    return true;
-}
-
-uint64_t ByteBuffer::Hash() {
+uint64_t ReadBuffer::Hash() {
     return komihash(ptr, b_size, 0);
 }
 
-bool ByteBuffer::AppendData(const void* data, size_t size) {
-    if (read_only) {
-        return false;
-    }
-    if (b_size + size > b_length) {
-        if (b_length == 0) {
-            const size_t MiB = 1024 * 1024;
-            b_length = MiB > size ? MiB : size;
-            b_size = 0;
-            ptr = (std::byte*)ossp_malloc(b_length);
-            if (!ptr) {
-                return false;
-            }
-        } else {
-            auto new_length = b_length * 2 + size;
-            auto r_pointer = realloc(ptr, new_length);
-            b_length = new_length;
-            //as backup
-            if (r_pointer == nullptr) {
-                auto new_ptr = ossp_malloc(new_length);
-                memmove(new_ptr, ptr, b_size);
-                ossp_free(ptr);
-                ptr = (std::byte*)new_ptr;
-            } else {
-                ptr = (std::byte*)r_pointer;
-            }
-            return true;
-        }
-    }
-    memmove((char*)ptr + b_size, data, size);
-    b_size = b_size + size;
-    current_pos += size;
-    return true;
-}
-
-bool ByteBuffer::SetDataAt(size_t pos, void* data, size_t size) {
-    if (read_only) {
-        return false;
-    }
-    if (pos + size < b_size) {
-        memmove((char*)ptr + pos, data, size);
-        return true;
-    }
-    return false;
-}
-
-bool ByteBuffer::ReadData(void* data, size_t size) {
+bool ReadBuffer::ReadData(void* data, size_t size) {
     if (current_read_pos + size <= b_size) {
         memmove(data, (char*)ptr + current_read_pos, size);
         current_read_pos += size;
@@ -299,7 +185,7 @@ bool ByteBuffer::ReadData(void* data, size_t size) {
     return false;
 }
 
-bool ByteBuffer::ReadDataAt(size_t pos, void* data, size_t size) {
+bool ReadBuffer::ReadDataAt(size_t pos, void* data, size_t size) {
     if (pos + size <= b_size) {
         memmove(data, (char*)ptr + pos, size);
         return true;
@@ -307,7 +193,7 @@ bool ByteBuffer::ReadDataAt(size_t pos, void* data, size_t size) {
     return false;
 }
 
-std::string ByteBuffer::to_string() {
+std::string ReadBuffer::to_string() {
     return {(char*)ptr, b_size};
 }
 }

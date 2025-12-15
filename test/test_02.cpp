@@ -1,12 +1,13 @@
 #include "memory_validation.cpp"
 
-#include "bytebuffer/buffer.h"
+#include "bytebuffer/ByteBuffer.h"
 #include <iostream>
 #include <ostream>
 #include <string>
 #include "content.h"
 
 using lyniat::memory::buffer::ByteBuffer;
+using lyniat::memory::buffer::ReadBuffer;
 
 #define ERR_ENDL(msg) std::cerr << msg << std::endl;
 #define ERR(msg) std::cerr << msg;
@@ -28,20 +29,21 @@ int main() {
     }
 
     bb->Uncompress();
-    auto size_end = bb->Size();
+    auto rb = (ReadBuffer*)bb;
+    auto size_end = rb->Size();
 
     if (size_before != size_end) {
         ERR_ENDL("Compression input and output don't match length!")
         return 1;
     }
 
-    auto result_1 = bb->to_string();
+    auto result_1 = rb->to_string();
 
     if (result_1 != test_string_european) {
         ERR_ENDL("Compression failed!")
         return 1;
     }
-    delete bb;
+    delete rb;
 
     auto leaks = check_allocated_memory();
     if (leaks != 0) {
