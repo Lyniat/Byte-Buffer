@@ -37,6 +37,8 @@ public:
 
     bool AppendString(const std::string& data);
 
+    bool AppendCString(const std::string& data);
+
     template<typename T>
     bool Append(T data) {
         static_assert(

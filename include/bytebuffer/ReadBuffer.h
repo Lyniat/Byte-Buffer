@@ -128,10 +128,10 @@ public:
         return true;
     }
 
-    bool ReadString(std::string* str);
     bool ReadString(std::string* str, size_t size);
+    bool ReadCString(std::string* str);
 
-    bool ReadStringAt(size_t pos, std::string* str);
+    bool ReadCStringAt(size_t pos, std::string* str);
     bool ReadStringAt(size_t pos, std::string* str, size_t size);
 
     template<typename T>
