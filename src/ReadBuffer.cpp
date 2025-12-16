@@ -176,28 +176,36 @@ uint64_t ReadBuffer::Hash() {
     return komihash(ptr, b_size, 0);
 }
 
-bool ReadBuffer::Read(std::string* str) {
-    return Read(str, SIZE_MAX);
+bool ReadBuffer::ReadString(std::string* str) {
+    return ReadString(str, SIZE_MAX);
 }
 
-bool ReadBuffer::Read(std::string* str, size_t size){
+bool ReadBuffer::ReadString(std::string* str, size_t size){
     if (current_read_pos < b_size) {
         auto diff = b_size - current_read_pos;
         auto read_ptr = (char*)ptr + current_read_pos;
         auto len =  std::min(strnlen(read_ptr, diff), size);
         auto read_str = std::string(read_ptr, len);
-        current_read_pos += read_str.size() + 1;
+        auto last_position = current_read_pos + len;
+        if (last_position < b_size) {
+            unsigned char last_char;
+            ReadDataAt(last_position, &last_char, sizeof(last_char));
+            if (last_char == '\0') {
+                current_read_pos++;
+            }
+        }
+        current_read_pos += len;
         *str = read_str;
         return true;
     }
     return false;
 }
 
-bool ReadBuffer::ReadAt(size_t pos, std::string* str){
-    return ReadAt(pos, str, SIZE_MAX);
+bool ReadBuffer::ReadStringAt(size_t pos, std::string* str){
+    return ReadStringAt(pos, str, SIZE_MAX);
 }
 
-bool ReadBuffer::ReadAt(size_t pos, std::string* str, size_t size){
+bool ReadBuffer::ReadStringAt(size_t pos, std::string* str, size_t size){
     if (pos < b_size) {
         auto diff = b_size - pos;
         auto read_ptr = (char*)ptr + pos;
@@ -227,6 +235,6 @@ bool ReadBuffer::ReadDataAt(size_t pos, void* data, size_t size) {
 
 std::string ReadBuffer::to_string() {
     auto len = strnlen((char*)ptr, b_size);
-    return std::string((char*)ptr, len);
+    return {(char*)ptr, len};
 }
 }

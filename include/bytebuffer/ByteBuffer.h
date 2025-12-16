@@ -35,31 +35,38 @@ class ByteBuffer : public ReadBuffer {
 public:
     using ReadBuffer::ReadBuffer;
 
-    bool Append(const std::string& data) {
-        if (AppendData(data.c_str(), data.size())) {
-            const uint8_t nt = '\0';
-            return AppendData(&nt, sizeof(nt));
-        }
-        return false;
-    }
+    bool AppendString(const std::string& data);
 
     template<typename T>
     bool Append(T data) {
+        static_assert(
+        std::is_arithmetic_v<T> ||
+        (std::is_trivial_v<T> && std::is_standard_layout_v<T>),
+        "T must be numeric or a POD-like struct");
         return AppendData(&data, sizeof(T));
     }
 
     template<typename T>
     bool Append(T* data, size_t size) {
+        static_assert(
+        std::is_arithmetic_v<T> ||
+        (std::is_trivial_v<T> && std::is_standard_layout_v<T>),
+        "T must be numeric or a POD-like struct");
         return AppendData(data, size);
     }
 
     template<typename T>
     bool Append(const T* data, size_t size) {
+        static_assert(
+        std::is_arithmetic_v<T> ||
+        (std::is_trivial_v<T> && std::is_standard_layout_v<T>),
+        "T must be numeric or a POD-like struct");
         return AppendData(data, size);
     }
 
-    template<typename T, std::enable_if_t<std::is_arithmetic_v<T>, int> = 0>
+    template<typename T>
     void AppendWithEndian(T data, Endianness endian) {
+        static_assert(std::is_arithmetic_v<T>, "T must be numeric");
         T converted;
         switch (endian) {
             case Host:
@@ -87,8 +94,9 @@ public:
         return SetDataAt(pos, data, size);
     }
 
-    template<typename T, std::enable_if_t<std::is_arithmetic_v<T>, int> = 0>
+    template<typename T>
     bool SetAtWithEndian(size_t pos, T data, Endianness endian) {
+        static_assert(std::is_arithmetic_v<T>, "T must be numeric");
         T converted;
         switch (endian) {
             case Host:

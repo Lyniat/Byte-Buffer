@@ -18,7 +18,7 @@ int main() {
     ByteBuffer* bb;
 
     bb = new ByteBuffer();
-    bb->Append(test_string_european);
+    bb->AppendString(test_string_european);
     auto size_before = bb->Size();
     bb->Compress();
     auto size_after = bb->Size();

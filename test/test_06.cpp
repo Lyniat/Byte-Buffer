@@ -18,9 +18,9 @@ int main() {
     ByteBuffer* bb;
 
     bb = new ByteBuffer();
-    bb->Append(test_string_haiku);
-    bb->Append(test_string_european);
-    bb->Append(test_string_haiku);
+    bb->AppendString(test_string_haiku);
+    bb->AppendString(test_string_european);
+    bb->AppendString(test_string_haiku);
 
     auto br = new ReadBuffer(*bb);
 
@@ -28,39 +28,66 @@ int main() {
 
     std::string result;
 
-    br->ReadAt(0, &result);
+    br->ReadStringAt(0, &result);
     if (result != test_string_haiku) {
         ERR_ENDL("Haiku 1 test string failed!")
         return 1;
     }
 
-    br->ReadAt(test_string_haiku.size() + 1, &result);
+    br->ReadStringAt(test_string_haiku.size() + 1, &result);
     if (result != test_string_european) {
         ERR_ENDL("European test string failed!")
         return 1;
     }
 
-    br->ReadAt(test_string_haiku.size() + 1 + test_string_european.size() + 1, &result);
+    br->ReadStringAt(test_string_haiku.size() + 1 + test_string_european.size() + 1, &result);
     if (result != test_string_haiku) {
         ERR_ENDL("Haiku 2 test string failed!")
         return 1;
     }
 
-    br->Read(&result);
+    br->ReadString(&result);
     if (result != test_string_haiku) {
         ERR_ENDL("Haiku 1 test string failed!")
         return 1;
     }
 
-    br->Read(&result);
+    br->ReadString(&result);
     if (result != test_string_european) {
         ERR_ENDL("European test string failed!")
         return 1;
     }
 
-    br->Read(&result);
+    br->ReadString(&result);
     if (result != test_string_haiku) {
         ERR_ENDL("Haiku 2 test string failed!")
+        return 1;
+    }
+
+    delete br;
+
+    bb = new ByteBuffer();
+    bb->AppendString(test_string_haiku);
+    bb->AppendString(test_string_european);
+    bb->AppendString(test_string_haiku);
+
+    br = (ReadBuffer*)(bb);
+
+    br->ReadString(&result);
+    if (result != test_string_haiku) {
+        ERR_ENDL("Haiku 1 test string failed!")
+        return 1;
+    }
+
+    br->ReadString(&result, test_string_european_start.size());
+    if (result != test_string_european_start) {
+        ERR_ENDL("European test string failed!")
+        return 1;
+    }
+
+    br->ReadString(&result);
+    if (result != test_string_european_end) {
+        ERR_ENDL("European test string failed!")
         return 1;
     }
 

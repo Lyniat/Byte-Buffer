@@ -17,7 +17,7 @@ int main() {
     ByteBuffer* bb;
 
     bb = new ByteBuffer();
-    bb->Append(test_string_european);
+    bb->AppendString(test_string_european);
     auto result_1 = bb->to_string();
 
     if (result_1 != test_string_european) {
@@ -27,7 +27,7 @@ int main() {
     delete bb;
 
     bb = new ByteBuffer();
-    bb->Append(test_string_haiku);
+    bb->AppendString(test_string_haiku);
     auto result_2 = bb->to_string();
 
     if (result_2 != test_string_haiku) {

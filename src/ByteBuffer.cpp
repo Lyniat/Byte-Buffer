@@ -31,6 +31,14 @@
 
 namespace lyniat::memory::buffer {
 
+bool ByteBuffer::AppendString(const std::string& data) {
+    if (AppendData(data.c_str(), data.size())) {
+        const uint8_t nt = '\0';
+        return AppendData(&nt, sizeof(nt));
+    }
+    return false;
+}
+
 const std::byte* ByteBuffer::Data() const {
     return ptr;
 }

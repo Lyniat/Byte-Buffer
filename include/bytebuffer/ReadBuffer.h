@@ -86,21 +86,27 @@ public:
 
     ~ReadBuffer();
 
-    bool Read(std::string* str);
-    bool Read(std::string* str, size_t size);
-
     template<typename T>
     bool Read(T* data) {
+        static_assert(
+        std::is_arithmetic_v<T> ||
+        (std::is_trivial_v<T> && std::is_standard_layout_v<T>),
+        "T must be numeric or a POD-like struct");
         return ReadData(data, sizeof(T));
     }
 
     template<typename T>
     bool Read(T* data, size_t size) {
+        static_assert(
+        std::is_arithmetic_v<T> ||
+        (std::is_trivial_v<T> && std::is_standard_layout_v<T>),
+        "T must be numeric or a POD-like struct");
         return ReadData(data, size);
     }
 
-    template<typename T, std::enable_if_t<std::is_arithmetic_v<T>, int> = 0>
+    template<typename T>
     bool ReadWithEndian(T* data, Endianness endian) {
+        static_assert(std::is_arithmetic_v<T>, "T must be numeric");
         T read;
         auto result = Read(&read, sizeof(T));
         if (!result) {
@@ -122,17 +128,52 @@ public:
         return true;
     }
 
-    bool ReadAt(size_t pos, std::string* str);
-    bool ReadAt(size_t pos, std::string* str, size_t size);
+    bool ReadString(std::string* str);
+    bool ReadString(std::string* str, size_t size);
+
+    bool ReadStringAt(size_t pos, std::string* str);
+    bool ReadStringAt(size_t pos, std::string* str, size_t size);
 
     template<typename T>
     bool ReadAt(size_t pos, T* data) {
+        static_assert(
+        std::is_arithmetic_v<T> ||
+        (std::is_trivial_v<T> && std::is_standard_layout_v<T>),
+        "T must be numeric or a POD-like struct");
         return ReadDataAt(pos, data, sizeof(T));
     }
 
     template<typename T>
     bool ReadAt(size_t pos, T* data, size_t size) {
+        static_assert(
+        std::is_arithmetic_v<T> ||
+        (std::is_trivial_v<T> && std::is_standard_layout_v<T>),
+        "T must be numeric or a POD-like struct");
         return ReadDataAt(pos, data, size);
+    }
+
+    template<typename T>
+    bool ReadWithEndianAt(size_t pos, T* data, Endianness endian) {
+        static_assert(std::is_arithmetic_v<T>, "T must be numeric");
+        T read;
+        auto result = ReadDataAt(pos, &read, sizeof(T));
+        if (!result) {
+            return false;
+        }
+        switch (endian) {
+            case Host:
+                #if BB_CPU_ENDIAN_BIG
+                *data = bx::toHostEndian(read, false);
+                #else
+                *data = toHostEndian(read, true);
+                #endif
+                break;
+            case Little: *data = toLittleEndian(read);
+                break;
+            case Big: *data = toBigEndian(read);
+                break;
+        }
+        return true;
     }
 
     size_t Size();
