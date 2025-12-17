@@ -9,32 +9,35 @@
 using lyniat::memory::buffer::ByteBuffer;
 using lyniat::memory::buffer::ReadBuffer;
 
-#define ERR_ENDL(msg) std::cerr << msg << std::endl;
-#define ERR(msg) std::cerr << msg;
-
-int main() {
+int run_test() {
     set_test_memory_allocator();
 
-    ByteBuffer* bb;
-
-    bb = new ByteBuffer();
+    auto bb = std::make_unique<ByteBuffer>();
     bb->AppendString(test_string_european);
 
-    auto rb = new ReadBuffer(*bb);
-    delete bb;
+    std::unique_ptr<ReadBuffer> rb = std::move(bb);
 
     auto result_1 = rb->to_string();
     if (result_1 != test_string_european) {
         ERR_ENDL("European test string failed!")
-        return 1;
     }
-    delete rb;
+
+    return 0;
+}
+
+int main() {
+    set_test_memory_allocator();
+
+    auto result = run_test();
+
+    if (result != 0) {
+        return result;
+    }
 
     auto leaks = check_allocated_memory();
     if (leaks != 0) {
         ERR(leaks)
         ERR_ENDL(" memory leaks detected!")
-        return 1;
     }
 
     return 0;

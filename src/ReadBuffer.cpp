@@ -23,11 +23,15 @@
 */
 
 #include "bytebuffer/ReadBuffer.h"
+
+#include <filesystem>
+#include <limits>
+#include <fstream>
+
 #include "bytebuffer/memory.h"
 #include "komihash.h"
 
 #include <iostream>
-#include <ostream>
 
 namespace lyniat::memory::buffer {
 
@@ -60,6 +64,38 @@ ReadBuffer::ReadBuffer(void* new_ptr, size_t size, bool copy) {
         b_length = size;
         free_memory = false;
     }
+}
+
+ReadBuffer::ReadBuffer(const std::filesystem::path& path) {
+    auto length = std::filesystem::file_size(path);
+    if (length == 0 || length > std::numeric_limits<std::streamsize>::max()) {
+        return;
+    }
+    ptr = (std::byte*)ossp_malloc(length);
+    b_size = length;
+    b_length = length;
+    free_memory = true;
+    current_pos = 0;
+    current_read_pos = 0;
+    read_only = true;
+    std::ifstream input_file(path, std::ios_base::binary);
+    if (input_file.fail()) {
+        ossp_free(ptr);
+        ptr = nullptr;
+        b_size = 0;
+        b_length = 0;
+        free_memory = false;
+        return;
+    }
+    input_file.read((char*)ptr, static_cast<std::streamsize>(length));
+    if (input_file.fail()) {
+        ossp_free(ptr);
+        ptr = nullptr;
+        b_size = 0;
+        b_length = 0;
+        free_memory = false;
+    }
+    input_file.close();
 }
 
 // copy constructor
@@ -174,6 +210,23 @@ size_t ReadBuffer::CurrentReadingPos() {
 
 uint64_t ReadBuffer::Hash() {
     return komihash(ptr, b_size, 0);
+}
+
+bool ReadBuffer::WriteToDisk(const std::filesystem::path& path) {
+
+    if (b_size > std::numeric_limits<std::streamsize>::max()) {
+        return false;
+    }
+    std::ofstream output_file(path, std::ios::binary);
+    if (output_file.fail()) {
+        return false;
+    }
+    output_file.write((char*)ptr, static_cast<std::streamsize>(b_size));
+    output_file.close();
+    if (output_file.fail()) {
+        return false;
+    }
+    return true;
 }
 
 bool ReadBuffer::ReadCString(std::string* str) {

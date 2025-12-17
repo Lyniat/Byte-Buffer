@@ -1,4 +1,8 @@
 #pragma once
+
+#define ERR_ENDL(msg) std::cerr << msg << std::endl; return 1;
+#define ERR(msg) std::cerr << msg;
+
 #include <string>
 
 const std::string test_string_european =
@@ -30,6 +34,8 @@ const std::string test_string_haiku =
     R"(古池や
 蛙飛び込む
 水の音)";
+
+const std::string test_file_name = "test.bin";
 
 constexpr uint8_t a = 123;
 constexpr int8_t b = -4;

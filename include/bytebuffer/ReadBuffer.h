@@ -24,6 +24,7 @@
 
 #pragma once
 
+#include <filesystem>
 #include <limits>
 
 // Might be useful in future when porting to more platforms
@@ -77,6 +78,8 @@ public:
 
     ReadBuffer(void* new_ptr, size_t size, bool copy = false);
 
+    explicit ReadBuffer(const std::filesystem::path& path);
+
     // Rule of Five Implementation
     ReadBuffer(const ReadBuffer& other);
     ReadBuffer& operator=(const ReadBuffer& other);
@@ -84,7 +87,7 @@ public:
     ReadBuffer& operator=(ReadBuffer&& other) noexcept;
 
 
-    ~ReadBuffer();
+    virtual ~ReadBuffer();
 
     template<typename T>
     bool Read(T* data) {
@@ -183,6 +186,8 @@ public:
     size_t CurrentReadingPos();
 
     uint64_t Hash();
+
+    bool WriteToDisk(const std::filesystem::path& path);
 
     std::string to_string();
 

@@ -7,15 +7,8 @@
 
 using lyniat::memory::buffer::ByteBuffer;
 
-#define ERR_ENDL(msg) std::cerr << msg << std::endl;
-#define ERR(msg) std::cerr << msg;
-
-int main() {
-    set_test_memory_allocator();
-
-    ByteBuffer* bb;
-
-    bb = new ByteBuffer();
+int run_test() {
+    auto bb = std::make_unique<ByteBuffer>();
 
     bb->Append(a);
     bb->Append(b);
@@ -58,13 +51,22 @@ int main() {
     if (h != _h) return 1;
     // NOLINTEND(readability-braces-around-statements)
 
-    delete bb;
+    return 0;
+}
+
+int main() {
+    set_test_memory_allocator();
+
+    auto result = run_test();
+
+    if (result != 0) {
+        return result;
+    }
 
     auto leaks = check_allocated_memory();
     if (leaks != 0) {
         ERR(leaks)
         ERR_ENDL(" memory leaks detected!")
-        return 1;
     }
 
     return 0;

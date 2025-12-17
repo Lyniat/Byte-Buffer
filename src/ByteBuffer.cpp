@@ -116,6 +116,7 @@ bool ByteBuffer::AppendData(const void* data, size_t size) {
             b_length = MiB > size ? MiB : size;
             b_size = 0;
             ptr = (std::byte*)ossp_malloc(b_length);
+            free_memory = true;
             if (!ptr) {
                 return false;
             }

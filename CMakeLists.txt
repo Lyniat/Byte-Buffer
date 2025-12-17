@@ -83,7 +83,12 @@ if (BUILD_TESTING)
     add_test(NAME "Test Byte Buffer 6"
             COMMAND test_bb_06)
 
-    set_target_properties(test_bb_01 test_bb_02 test_bb_03 test_bb_04 test_bb_05 test_bb_06
+    add_executable(test_bb_07 test/test_07.cpp)
+    target_link_libraries(test_bb_07 ${THIS_PROJECT_NAME})
+    add_test(NAME "Test Byte Buffer 7"
+            COMMAND test_bb_07)
+
+    set_target_properties(test_bb_01 test_bb_02 test_bb_03 test_bb_04 test_bb_05 test_bb_06 test_bb_07
             PROPERTIES CXX_STANDARD 17
             COMPILE_WARNING_AS_ERROR ON)
 endif()

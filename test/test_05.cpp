@@ -7,15 +7,8 @@
 
 using lyniat::memory::buffer::ByteBuffer;
 
-#define ERR_ENDL(msg) std::cerr << msg << std::endl;
-#define ERR(msg) std::cerr << msg;
-
-int main() {
-    set_test_memory_allocator();
-
-    ByteBuffer* bb;
-
-    bb = new ByteBuffer();
+int run_test() {
+    auto bb = std::make_unique<ByteBuffer>();
     bb->AppendWithEndian(a, ByteBuffer::Endianness::Host);
     bb->AppendWithEndian(b, ByteBuffer::Endianness::Host);
     bb->AppendWithEndian(c, ByteBuffer::Endianness::Host);
@@ -135,9 +128,7 @@ int main() {
     if (l != _l) return 1;
     // NOLINTEND(readability-braces-around-statements)
 
-    delete bb;
-
-    bb = new ByteBuffer();
+    bb = std::make_unique<ByteBuffer>();
     bb->AppendWithEndian(a, ByteBuffer::Endianness::Host);
     bb->AppendWithEndian(b, ByteBuffer::Endianness::Host);
     bb->AppendWithEndian(c, ByteBuffer::Endianness::Host);
@@ -208,9 +199,7 @@ int main() {
 #endif
     // NOLINTEND(readability-braces-around-statements)
 
-    delete bb;
-
-    bb = new ByteBuffer();
+    bb = std::make_unique<ByteBuffer>();
 #if BB_CPU_ENDIAN_LITTLE
     bb->AppendWithEndian(a, ByteBuffer::Endianness::Little);
     bb->AppendWithEndian(b, ByteBuffer::Endianness::Little);
@@ -324,13 +313,22 @@ int main() {
     if (l == _l) return 1;
     // NOLINTEND(readability-braces-around-statements)
 
-    delete bb;
+    return 0;
+}
+
+int main() {
+    set_test_memory_allocator();
+
+    auto result = run_test();
+
+    if (result != 0) {
+        return result;
+    }
 
     auto leaks = check_allocated_memory();
     if (leaks != 0) {
         ERR(leaks)
         ERR_ENDL(" memory leaks detected!")
-        return 1;
     }
 
     return 0;
