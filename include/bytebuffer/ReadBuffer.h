@@ -61,17 +61,19 @@ static_assert(std::numeric_limits<double>::is_iec559 && sizeof(double) == 8,
 #include <string>
 #include "endian.inl"
 
+namespace lyniat::memory {
+enum Endianness {
+    Host,
+    Little,
+    Big,
+};
+}
+
 namespace lyniat::memory::buffer {
 using namespace lyniat::memory;
 
 class ReadBuffer {
 public:
-    enum Endianness {
-        Host,
-        Little,
-        Big,
-    };
-
     ReadBuffer();
 
     explicit ReadBuffer(size_t size);
@@ -92,18 +94,18 @@ public:
     template<typename T>
     bool Read(T* data) {
         static_assert(
-        std::is_arithmetic_v<T> ||
-        (std::is_trivial_v<T> && std::is_standard_layout_v<T>),
-        "T must be numeric or a POD-like struct");
+            std::is_arithmetic_v<T> ||
+            (std::is_trivial_v<T> && std::is_standard_layout_v<T>),
+            "T must be numeric or a POD-like struct");
         return ReadData(data, sizeof(T));
     }
 
     template<typename T>
     bool Read(T* data, size_t size) {
         static_assert(
-        std::is_arithmetic_v<T> ||
-        (std::is_trivial_v<T> && std::is_standard_layout_v<T>),
-        "T must be numeric or a POD-like struct");
+            std::is_arithmetic_v<T> ||
+            (std::is_trivial_v<T> && std::is_standard_layout_v<T>),
+            "T must be numeric or a POD-like struct");
         return ReadData(data, size);
     }
 
@@ -140,18 +142,18 @@ public:
     template<typename T>
     bool ReadAt(size_t pos, T* data) {
         static_assert(
-        std::is_arithmetic_v<T> ||
-        (std::is_trivial_v<T> && std::is_standard_layout_v<T>),
-        "T must be numeric or a POD-like struct");
+            std::is_arithmetic_v<T> ||
+            (std::is_trivial_v<T> && std::is_standard_layout_v<T>),
+            "T must be numeric or a POD-like struct");
         return ReadDataAt(pos, data, sizeof(T));
     }
 
     template<typename T>
     bool ReadAt(size_t pos, T* data, size_t size) {
         static_assert(
-        std::is_arithmetic_v<T> ||
-        (std::is_trivial_v<T> && std::is_standard_layout_v<T>),
-        "T must be numeric or a POD-like struct");
+            std::is_arithmetic_v<T> ||
+            (std::is_trivial_v<T> && std::is_standard_layout_v<T>),
+            "T must be numeric or a POD-like struct");
         return ReadDataAt(pos, data, size);
     }
 

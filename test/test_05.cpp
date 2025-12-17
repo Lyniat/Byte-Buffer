@@ -6,47 +6,48 @@
 #include "content.h"
 
 using lyniat::memory::buffer::ByteBuffer;
+using lyniat::memory::Endianness;
 
 int run_test() {
     auto bb = std::make_unique<ByteBuffer>();
-    bb->AppendWithEndian(a, ByteBuffer::Endianness::Host);
-    bb->AppendWithEndian(b, ByteBuffer::Endianness::Host);
-    bb->AppendWithEndian(c, ByteBuffer::Endianness::Host);
-    bb->AppendWithEndian(d, ByteBuffer::Endianness::Host);
-    bb->AppendWithEndian(e, ByteBuffer::Endianness::Host);
-    bb->AppendWithEndian(f, ByteBuffer::Endianness::Host);
-    bb->AppendWithEndian(g, ByteBuffer::Endianness::Host);
-    bb->AppendWithEndian(h, ByteBuffer::Endianness::Host);
-    bb->AppendWithEndian(i, ByteBuffer::Endianness::Host);
-    bb->AppendWithEndian(j, ByteBuffer::Endianness::Host);
-    bb->AppendWithEndian(k, ByteBuffer::Endianness::Host);
-    bb->AppendWithEndian(l, ByteBuffer::Endianness::Host);
+    bb->AppendWithEndian(a, Endianness::Host);
+    bb->AppendWithEndian(b, Endianness::Host);
+    bb->AppendWithEndian(c, Endianness::Host);
+    bb->AppendWithEndian(d, Endianness::Host);
+    bb->AppendWithEndian(e, Endianness::Host);
+    bb->AppendWithEndian(f, Endianness::Host);
+    bb->AppendWithEndian(g, Endianness::Host);
+    bb->AppendWithEndian(h, Endianness::Host);
+    bb->AppendWithEndian(i, Endianness::Host);
+    bb->AppendWithEndian(j, Endianness::Host);
+    bb->AppendWithEndian(k, Endianness::Host);
+    bb->AppendWithEndian(l, Endianness::Host);
 
-    bb->AppendWithEndian(a, ByteBuffer::Endianness::Little);
-    bb->AppendWithEndian(b, ByteBuffer::Endianness::Little);
-    bb->AppendWithEndian(c, ByteBuffer::Endianness::Little);
-    bb->AppendWithEndian(d, ByteBuffer::Endianness::Little);
-    bb->AppendWithEndian(e, ByteBuffer::Endianness::Little);
-    bb->AppendWithEndian(f, ByteBuffer::Endianness::Little);
-    bb->AppendWithEndian(g, ByteBuffer::Endianness::Little);
-    bb->AppendWithEndian(h, ByteBuffer::Endianness::Little);
-    bb->AppendWithEndian(i, ByteBuffer::Endianness::Little);
-    bb->AppendWithEndian(j, ByteBuffer::Endianness::Little);
-    bb->AppendWithEndian(k, ByteBuffer::Endianness::Little);
-    bb->AppendWithEndian(l, ByteBuffer::Endianness::Little);
+    bb->AppendWithEndian(a, Endianness::Little);
+    bb->AppendWithEndian(b, Endianness::Little);
+    bb->AppendWithEndian(c, Endianness::Little);
+    bb->AppendWithEndian(d, Endianness::Little);
+    bb->AppendWithEndian(e, Endianness::Little);
+    bb->AppendWithEndian(f, Endianness::Little);
+    bb->AppendWithEndian(g, Endianness::Little);
+    bb->AppendWithEndian(h, Endianness::Little);
+    bb->AppendWithEndian(i, Endianness::Little);
+    bb->AppendWithEndian(j, Endianness::Little);
+    bb->AppendWithEndian(k, Endianness::Little);
+    bb->AppendWithEndian(l, Endianness::Little);
 
-    bb->AppendWithEndian(a, ByteBuffer::Endianness::Big);
-    bb->AppendWithEndian(b, ByteBuffer::Endianness::Big);
-    bb->AppendWithEndian(c, ByteBuffer::Endianness::Big);
-    bb->AppendWithEndian(d, ByteBuffer::Endianness::Big);
-    bb->AppendWithEndian(e, ByteBuffer::Endianness::Big);
-    bb->AppendWithEndian(f, ByteBuffer::Endianness::Big);
-    bb->AppendWithEndian(g, ByteBuffer::Endianness::Big);
-    bb->AppendWithEndian(h, ByteBuffer::Endianness::Big);
-    bb->AppendWithEndian(i, ByteBuffer::Endianness::Big);
-    bb->AppendWithEndian(j, ByteBuffer::Endianness::Big);
-    bb->AppendWithEndian(k, ByteBuffer::Endianness::Big);
-    bb->AppendWithEndian(l, ByteBuffer::Endianness::Big);
+    bb->AppendWithEndian(a, Endianness::Big);
+    bb->AppendWithEndian(b, Endianness::Big);
+    bb->AppendWithEndian(c, Endianness::Big);
+    bb->AppendWithEndian(d, Endianness::Big);
+    bb->AppendWithEndian(e, Endianness::Big);
+    bb->AppendWithEndian(f, Endianness::Big);
+    bb->AppendWithEndian(g, Endianness::Big);
+    bb->AppendWithEndian(h, Endianness::Big);
+    bb->AppendWithEndian(i, Endianness::Big);
+    bb->AppendWithEndian(j, Endianness::Big);
+    bb->AppendWithEndian(k, Endianness::Big);
+    bb->AppendWithEndian(l, Endianness::Big);
 
     // NOLINTBEGIN(readability-braces-around-statements)
     if (!bb->Read(&_a)) return 1;
@@ -75,18 +76,18 @@ int run_test() {
     if (k != _k) return 1;
     if (l != _l) return 1;
 
-    if (!bb->ReadWithEndian(&_a, ByteBuffer::Endianness::Little)) return 1;
-    if (!bb->ReadWithEndian(&_b, ByteBuffer::Endianness::Little)) return 1;
-    if (!bb->ReadWithEndian(&_c, ByteBuffer::Endianness::Little)) return 1;
-    if (!bb->ReadWithEndian(&_d, ByteBuffer::Endianness::Little)) return 1;
-    if (!bb->ReadWithEndian(&_e, ByteBuffer::Endianness::Little)) return 1;
-    if (!bb->ReadWithEndian(&_f, ByteBuffer::Endianness::Little)) return 1;
-    if (!bb->ReadWithEndian(&_g, ByteBuffer::Endianness::Little)) return 1;
-    if (!bb->ReadWithEndian(&_h, ByteBuffer::Endianness::Little)) return 1;
-    if (!bb->ReadWithEndian(&_i, ByteBuffer::Endianness::Little)) return 1;
-    if (!bb->ReadWithEndian(&_j, ByteBuffer::Endianness::Little)) return 1;
-    if (!bb->ReadWithEndian(&_k, ByteBuffer::Endianness::Little)) return 1;
-    if (!bb->ReadWithEndian(&_l, ByteBuffer::Endianness::Little)) return 1;
+    if (!bb->ReadWithEndian(&_a, Endianness::Little)) return 1;
+    if (!bb->ReadWithEndian(&_b, Endianness::Little)) return 1;
+    if (!bb->ReadWithEndian(&_c, Endianness::Little)) return 1;
+    if (!bb->ReadWithEndian(&_d, Endianness::Little)) return 1;
+    if (!bb->ReadWithEndian(&_e, Endianness::Little)) return 1;
+    if (!bb->ReadWithEndian(&_f, Endianness::Little)) return 1;
+    if (!bb->ReadWithEndian(&_g, Endianness::Little)) return 1;
+    if (!bb->ReadWithEndian(&_h, Endianness::Little)) return 1;
+    if (!bb->ReadWithEndian(&_i, Endianness::Little)) return 1;
+    if (!bb->ReadWithEndian(&_j, Endianness::Little)) return 1;
+    if (!bb->ReadWithEndian(&_k, Endianness::Little)) return 1;
+    if (!bb->ReadWithEndian(&_l, Endianness::Little)) return 1;
 
     if (a != _a) return 1;
     if (b != _b) return 1;
@@ -101,18 +102,18 @@ int run_test() {
     if (k != _k) return 1;
     if (l != _l) return 1;
 
-    if (!bb->ReadWithEndian(&_a, ByteBuffer::Endianness::Big)) return 1;
-    if (!bb->ReadWithEndian(&_b, ByteBuffer::Endianness::Big)) return 1;
-    if (!bb->ReadWithEndian(&_c, ByteBuffer::Endianness::Big)) return 1;
-    if (!bb->ReadWithEndian(&_d, ByteBuffer::Endianness::Big)) return 1;
-    if (!bb->ReadWithEndian(&_e, ByteBuffer::Endianness::Big)) return 1;
-    if (!bb->ReadWithEndian(&_f, ByteBuffer::Endianness::Big)) return 1;
-    if (!bb->ReadWithEndian(&_g, ByteBuffer::Endianness::Big)) return 1;
-    if (!bb->ReadWithEndian(&_h, ByteBuffer::Endianness::Big)) return 1;
-    if (!bb->ReadWithEndian(&_i, ByteBuffer::Endianness::Big)) return 1;
-    if (!bb->ReadWithEndian(&_j, ByteBuffer::Endianness::Big)) return 1;
-    if (!bb->ReadWithEndian(&_k, ByteBuffer::Endianness::Big)) return 1;
-    if (!bb->ReadWithEndian(&_l, ByteBuffer::Endianness::Big)) return 1;
+    if (!bb->ReadWithEndian(&_a, Endianness::Big)) return 1;
+    if (!bb->ReadWithEndian(&_b, Endianness::Big)) return 1;
+    if (!bb->ReadWithEndian(&_c, Endianness::Big)) return 1;
+    if (!bb->ReadWithEndian(&_d, Endianness::Big)) return 1;
+    if (!bb->ReadWithEndian(&_e, Endianness::Big)) return 1;
+    if (!bb->ReadWithEndian(&_f, Endianness::Big)) return 1;
+    if (!bb->ReadWithEndian(&_g, Endianness::Big)) return 1;
+    if (!bb->ReadWithEndian(&_h, Endianness::Big)) return 1;
+    if (!bb->ReadWithEndian(&_i, Endianness::Big)) return 1;
+    if (!bb->ReadWithEndian(&_j, Endianness::Big)) return 1;
+    if (!bb->ReadWithEndian(&_k, Endianness::Big)) return 1;
+    if (!bb->ReadWithEndian(&_l, Endianness::Big)) return 1;
 
     if (a != _a) return 1;
     if (b != _b) return 1;
@@ -129,33 +130,33 @@ int run_test() {
     // NOLINTEND(readability-braces-around-statements)
 
     bb = std::make_unique<ByteBuffer>();
-    bb->AppendWithEndian(a, ByteBuffer::Endianness::Host);
-    bb->AppendWithEndian(b, ByteBuffer::Endianness::Host);
-    bb->AppendWithEndian(c, ByteBuffer::Endianness::Host);
-    bb->AppendWithEndian(d, ByteBuffer::Endianness::Host);
-    bb->AppendWithEndian(e, ByteBuffer::Endianness::Host);
-    bb->AppendWithEndian(f, ByteBuffer::Endianness::Host);
-    bb->AppendWithEndian(g, ByteBuffer::Endianness::Host);
-    bb->AppendWithEndian(h, ByteBuffer::Endianness::Host);
-    bb->AppendWithEndian(i, ByteBuffer::Endianness::Host);
-    bb->AppendWithEndian(j, ByteBuffer::Endianness::Host);
-    bb->AppendWithEndian(k, ByteBuffer::Endianness::Host);
-    bb->AppendWithEndian(l, ByteBuffer::Endianness::Host);
+    bb->AppendWithEndian(a, Endianness::Host);
+    bb->AppendWithEndian(b, Endianness::Host);
+    bb->AppendWithEndian(c, Endianness::Host);
+    bb->AppendWithEndian(d, Endianness::Host);
+    bb->AppendWithEndian(e, Endianness::Host);
+    bb->AppendWithEndian(f, Endianness::Host);
+    bb->AppendWithEndian(g, Endianness::Host);
+    bb->AppendWithEndian(h, Endianness::Host);
+    bb->AppendWithEndian(i, Endianness::Host);
+    bb->AppendWithEndian(j, Endianness::Host);
+    bb->AppendWithEndian(k, Endianness::Host);
+    bb->AppendWithEndian(l, Endianness::Host);
 
     // NOLINTBEGIN(readability-braces-around-statements)
 #if BB_CPU_ENDIAN_LITTLE
-    if (!bb->ReadWithEndian(&_a, ByteBuffer::Endianness::Little)) return 1;
-    if (!bb->ReadWithEndian(&_b, ByteBuffer::Endianness::Little)) return 1;
-    if (!bb->ReadWithEndian(&_c, ByteBuffer::Endianness::Little)) return 1;
-    if (!bb->ReadWithEndian(&_d, ByteBuffer::Endianness::Little)) return 1;
-    if (!bb->ReadWithEndian(&_e, ByteBuffer::Endianness::Little)) return 1;
-    if (!bb->ReadWithEndian(&_f, ByteBuffer::Endianness::Little)) return 1;
-    if (!bb->ReadWithEndian(&_g, ByteBuffer::Endianness::Little)) return 1;
-    if (!bb->ReadWithEndian(&_h, ByteBuffer::Endianness::Little)) return 1;
-    if (!bb->ReadWithEndian(&_i, ByteBuffer::Endianness::Little)) return 1;
-    if (!bb->ReadWithEndian(&_j, ByteBuffer::Endianness::Little)) return 1;
-    if (!bb->ReadWithEndian(&_k, ByteBuffer::Endianness::Little)) return 1;
-    if (!bb->ReadWithEndian(&_l, ByteBuffer::Endianness::Little)) return 1;
+    if (!bb->ReadWithEndian(&_a, Endianness::Little)) return 1;
+    if (!bb->ReadWithEndian(&_b, Endianness::Little)) return 1;
+    if (!bb->ReadWithEndian(&_c, Endianness::Little)) return 1;
+    if (!bb->ReadWithEndian(&_d, Endianness::Little)) return 1;
+    if (!bb->ReadWithEndian(&_e, Endianness::Little)) return 1;
+    if (!bb->ReadWithEndian(&_f, Endianness::Little)) return 1;
+    if (!bb->ReadWithEndian(&_g, Endianness::Little)) return 1;
+    if (!bb->ReadWithEndian(&_h, Endianness::Little)) return 1;
+    if (!bb->ReadWithEndian(&_i, Endianness::Little)) return 1;
+    if (!bb->ReadWithEndian(&_j, Endianness::Little)) return 1;
+    if (!bb->ReadWithEndian(&_k, Endianness::Little)) return 1;
+    if (!bb->ReadWithEndian(&_l, Endianness::Little)) return 1;
 
     if (a != _a) return 1;
     if (b != _b) return 1;
@@ -171,18 +172,18 @@ int run_test() {
     if (l != _l) return 1;
 
 #else
-    if (!bb->ReadWithEndian(&_a, ByteBuffer::Endianness::Big)) return 1;
-    if (!bb->ReadWithEndian(&_b, ByteBuffer::Endianness::Big)) return 1;
-    if (!bb->ReadWithEndian(&_c, ByteBuffer::Endianness::Big)) return 1;
-    if (!bb->ReadWithEndian(&_d, ByteBuffer::Endianness::Big)) return 1;
-    if (!bb->ReadWithEndian(&_e, ByteBuffer::Endianness::Big)) return 1;
-    if (!bb->ReadWithEndian(&_f, ByteBuffer::Endianness::Big)) return 1;
-    if (!bb->ReadWithEndian(&_g, ByteBuffer::Endianness::Big)) return 1;
-    if (!bb->ReadWithEndian(&_h, ByteBuffer::Endianness::Big)) return 1;
-    if (!bb->ReadWithEndian(&_i, ByteBuffer::Endianness::Big)) return 1;
-    if (!bb->ReadWithEndian(&_j, ByteBuffer::Endianness::Big)) return 1;
-    if (!bb->ReadWithEndian(&_k, ByteBuffer::Endianness::Big)) return 1;
-    if (!bb->ReadWithEndian(&_l, ByteBuffer::Endianness::Big)) return 1;
+    if (!bb->ReadWithEndian(&_a, Endianness::Big)) return 1;
+    if (!bb->ReadWithEndian(&_b, Endianness::Big)) return 1;
+    if (!bb->ReadWithEndian(&_c, Endianness::Big)) return 1;
+    if (!bb->ReadWithEndian(&_d, Endianness::Big)) return 1;
+    if (!bb->ReadWithEndian(&_e, Endianness::Big)) return 1;
+    if (!bb->ReadWithEndian(&_f, Endianness::Big)) return 1;
+    if (!bb->ReadWithEndian(&_g, Endianness::Big)) return 1;
+    if (!bb->ReadWithEndian(&_h, Endianness::Big)) return 1;
+    if (!bb->ReadWithEndian(&_i, Endianness::Big)) return 1;
+    if (!bb->ReadWithEndian(&_j, Endianness::Big)) return 1;
+    if (!bb->ReadWithEndian(&_k, Endianness::Big)) return 1;
+    if (!bb->ReadWithEndian(&_l, Endianness::Big)) return 1;
 
     if (a != _a) return 1;
     if (b != _b) return 1;
@@ -201,57 +202,57 @@ int run_test() {
 
     bb = std::make_unique<ByteBuffer>();
 #if BB_CPU_ENDIAN_LITTLE
-    bb->AppendWithEndian(a, ByteBuffer::Endianness::Little);
-    bb->AppendWithEndian(b, ByteBuffer::Endianness::Little);
-    bb->AppendWithEndian(c, ByteBuffer::Endianness::Little);
-    bb->AppendWithEndian(d, ByteBuffer::Endianness::Little);
-    bb->AppendWithEndian(e, ByteBuffer::Endianness::Little);
-    bb->AppendWithEndian(f, ByteBuffer::Endianness::Little);
-    bb->AppendWithEndian(g, ByteBuffer::Endianness::Little);
-    bb->AppendWithEndian(h, ByteBuffer::Endianness::Little);
-    bb->AppendWithEndian(i, ByteBuffer::Endianness::Little);
-    bb->AppendWithEndian(j, ByteBuffer::Endianness::Little);
-    bb->AppendWithEndian(k, ByteBuffer::Endianness::Little);
-    bb->AppendWithEndian(l, ByteBuffer::Endianness::Little);
+    bb->AppendWithEndian(a, Endianness::Little);
+    bb->AppendWithEndian(b, Endianness::Little);
+    bb->AppendWithEndian(c, Endianness::Little);
+    bb->AppendWithEndian(d, Endianness::Little);
+    bb->AppendWithEndian(e, Endianness::Little);
+    bb->AppendWithEndian(f, Endianness::Little);
+    bb->AppendWithEndian(g, Endianness::Little);
+    bb->AppendWithEndian(h, Endianness::Little);
+    bb->AppendWithEndian(i, Endianness::Little);
+    bb->AppendWithEndian(j, Endianness::Little);
+    bb->AppendWithEndian(k, Endianness::Little);
+    bb->AppendWithEndian(l, Endianness::Little);
 
-    bb->AppendWithEndian(a, ByteBuffer::Endianness::Big);
-    bb->AppendWithEndian(b, ByteBuffer::Endianness::Big);
-    bb->AppendWithEndian(c, ByteBuffer::Endianness::Big);
-    bb->AppendWithEndian(d, ByteBuffer::Endianness::Big);
-    bb->AppendWithEndian(e, ByteBuffer::Endianness::Big);
-    bb->AppendWithEndian(f, ByteBuffer::Endianness::Big);
-    bb->AppendWithEndian(g, ByteBuffer::Endianness::Big);
-    bb->AppendWithEndian(h, ByteBuffer::Endianness::Big);
-    bb->AppendWithEndian(i, ByteBuffer::Endianness::Big);
-    bb->AppendWithEndian(j, ByteBuffer::Endianness::Big);
-    bb->AppendWithEndian(k, ByteBuffer::Endianness::Big);
-    bb->AppendWithEndian(l, ByteBuffer::Endianness::Big);
+    bb->AppendWithEndian(a, Endianness::Big);
+    bb->AppendWithEndian(b, Endianness::Big);
+    bb->AppendWithEndian(c, Endianness::Big);
+    bb->AppendWithEndian(d, Endianness::Big);
+    bb->AppendWithEndian(e, Endianness::Big);
+    bb->AppendWithEndian(f, Endianness::Big);
+    bb->AppendWithEndian(g, Endianness::Big);
+    bb->AppendWithEndian(h, Endianness::Big);
+    bb->AppendWithEndian(i, Endianness::Big);
+    bb->AppendWithEndian(j, Endianness::Big);
+    bb->AppendWithEndian(k, Endianness::Big);
+    bb->AppendWithEndian(l, Endianness::Big);
 #else
-    bb->AppendWithEndian(a, ByteBuffer::Endianness::Big);
-    bb->AppendWithEndian(b, ByteBuffer::Endianness::Big);
-    bb->AppendWithEndian(c, ByteBuffer::Endianness::Big);
-    bb->AppendWithEndian(d, ByteBuffer::Endianness::Big);
-    bb->AppendWithEndian(e, ByteBuffer::Endianness::Big);
-    bb->AppendWithEndian(f, ByteBuffer::Endianness::Big);
-    bb->AppendWithEndian(g, ByteBuffer::Endianness::Big);
-    bb->AppendWithEndian(h, ByteBuffer::Endianness::Big);
-    bb->AppendWithEndian(i, ByteBuffer::Endianness::Big);
-    bb->AppendWithEndian(j, ByteBuffer::Endianness::Big);
-    bb->AppendWithEndian(k, ByteBuffer::Endianness::Big);
-    bb->AppendWithEndian(l, ByteBuffer::Endianness::Big);
+    bb->AppendWithEndian(a, Endianness::Big);
+    bb->AppendWithEndian(b, Endianness::Big);
+    bb->AppendWithEndian(c, Endianness::Big);
+    bb->AppendWithEndian(d, Endianness::Big);
+    bb->AppendWithEndian(e, Endianness::Big);
+    bb->AppendWithEndian(f, Endianness::Big);
+    bb->AppendWithEndian(g, Endianness::Big);
+    bb->AppendWithEndian(h, Endianness::Big);
+    bb->AppendWithEndian(i, Endianness::Big);
+    bb->AppendWithEndian(j, Endianness::Big);
+    bb->AppendWithEndian(k, Endianness::Big);
+    bb->AppendWithEndian(l, Endianness::Big);
 
-    bb->AppendWithEndian(a, ByteBuffer::Endianness::Little);
-    bb->AppendWithEndian(b, ByteBuffer::Endianness::Little);
-    bb->AppendWithEndian(c, ByteBuffer::Endianness::Little);
-    bb->AppendWithEndian(d, ByteBuffer::Endianness::Little);
-    bb->AppendWithEndian(e, ByteBuffer::Endianness::Little);
-    bb->AppendWithEndian(f, ByteBuffer::Endianness::Little);
-    bb->AppendWithEndian(g, ByteBuffer::Endianness::Little);
-    bb->AppendWithEndian(h, ByteBuffer::Endianness::Little);
-    bb->AppendWithEndian(i, ByteBuffer::Endianness::Little);
-    bb->AppendWithEndian(j, ByteBuffer::Endianness::Little);
-    bb->AppendWithEndian(k, ByteBuffer::Endianness::Little);
-    bb->AppendWithEndian(l, ByteBuffer::Endianness::Little);
+    bb->AppendWithEndian(a, Endianness::Little);
+    bb->AppendWithEndian(b, Endianness::Little);
+    bb->AppendWithEndian(c, Endianness::Little);
+    bb->AppendWithEndian(d, Endianness::Little);
+    bb->AppendWithEndian(e, Endianness::Little);
+    bb->AppendWithEndian(f, Endianness::Little);
+    bb->AppendWithEndian(g, Endianness::Little);
+    bb->AppendWithEndian(h, Endianness::Little);
+    bb->AppendWithEndian(i, Endianness::Little);
+    bb->AppendWithEndian(j, Endianness::Little);
+    bb->AppendWithEndian(k, Endianness::Little);
+    bb->AppendWithEndian(l, Endianness::Little);
 #endif
 
     // NOLINTBEGIN(readability-braces-around-statements)

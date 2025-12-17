@@ -42,27 +42,27 @@ public:
     template<typename T>
     bool Append(T data) {
         static_assert(
-        std::is_arithmetic_v<T> ||
-        (std::is_trivial_v<T> && std::is_standard_layout_v<T>),
-        "T must be numeric or a POD-like struct");
+            std::is_arithmetic_v<T> ||
+            (std::is_trivial_v<T> && std::is_standard_layout_v<T>),
+            "T must be numeric or a POD-like struct");
         return AppendData(&data, sizeof(T));
     }
 
     template<typename T>
     bool Append(T* data, size_t size) {
         static_assert(
-        std::is_arithmetic_v<T> ||
-        (std::is_trivial_v<T> && std::is_standard_layout_v<T>),
-        "T must be numeric or a POD-like struct");
+            std::is_arithmetic_v<T> ||
+            (std::is_trivial_v<T> && std::is_standard_layout_v<T>),
+            "T must be numeric or a POD-like struct");
         return AppendData(data, size);
     }
 
     template<typename T>
     bool Append(const T* data, size_t size) {
         static_assert(
-        std::is_arithmetic_v<T> ||
-        (std::is_trivial_v<T> && std::is_standard_layout_v<T>),
-        "T must be numeric or a POD-like struct");
+            std::is_arithmetic_v<T> ||
+            (std::is_trivial_v<T> && std::is_standard_layout_v<T>),
+            "T must be numeric or a POD-like struct");
         return AppendData(data, size);
     }
 

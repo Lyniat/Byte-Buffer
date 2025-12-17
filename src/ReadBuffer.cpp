@@ -233,7 +233,7 @@ bool ReadBuffer::ReadCString(std::string* str) {
     if (current_read_pos < b_size) {
         auto diff = b_size - current_read_pos;
         auto read_ptr = (char*)ptr + current_read_pos;
-        auto len =  strnlen(read_ptr, diff);
+        auto len = strnlen(read_ptr, diff);
         auto last_position = current_read_pos + len;
         auto read_str = std::string(read_ptr, len);
         unsigned char last_char;
@@ -248,11 +248,11 @@ bool ReadBuffer::ReadCString(std::string* str) {
     return false;
 }
 
-bool ReadBuffer::ReadString(std::string* str, size_t size){
+bool ReadBuffer::ReadString(std::string* str, size_t size) {
     if (current_read_pos < b_size) {
         auto diff = b_size - current_read_pos;
         auto read_ptr = (char*)ptr + current_read_pos;
-        auto len =  std::min(strnlen(read_ptr, diff), size);
+        auto len = std::min(strnlen(read_ptr, diff), size);
         auto last_position = current_read_pos + len;
         if (last_position >= b_size) {
             return false;
@@ -265,7 +265,7 @@ bool ReadBuffer::ReadString(std::string* str, size_t size){
     return false;
 }
 
-bool ReadBuffer::ReadCStringAt(size_t pos, std::string* str){
+bool ReadBuffer::ReadCStringAt(size_t pos, std::string* str) {
     if (pos < b_size) {
         auto diff = b_size - pos;
         auto read_ptr = (char*)ptr + pos;
@@ -282,7 +282,7 @@ bool ReadBuffer::ReadCStringAt(size_t pos, std::string* str){
     return false;
 }
 
-bool ReadBuffer::ReadStringAt(size_t pos, std::string* str, size_t size){
+bool ReadBuffer::ReadStringAt(size_t pos, std::string* str, size_t size) {
     if (pos < b_size) {
         auto diff = b_size - pos;
         auto read_ptr = (char*)ptr + pos;
