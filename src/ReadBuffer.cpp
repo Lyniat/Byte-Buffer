@@ -205,7 +205,7 @@ bool ReadBuffer::ReadOnly() {
 }
 
 size_t ReadBuffer::CurrentReadingPos() {
-    return current_pos;
+    return current_read_pos;
 }
 
 uint64_t ReadBuffer::Hash() {

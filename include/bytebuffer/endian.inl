@@ -1,3 +1,5 @@
+#include <cstring> //needed by gcc
+
 namespace lyniat::memory
 {
     inline uint8_t endianSwap(uint8_t _in)
