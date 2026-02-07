@@ -51,7 +51,7 @@ const std::byte* ByteBuffer::DataAt(size_t position) const {
     if (position >= b_size) {
         return nullptr;
     }
-    return (std::byte*)((char*)ptr + position);
+    return static_cast<std::byte*>(ptr) + position;
 }
 
 bool ByteBuffer::SetCurrentReadingPos(size_t pos) {
@@ -74,22 +74,22 @@ bool ByteBuffer::Compress() {
         ossp_free(ptr);
     }
     auto final_len = comp_len + sizeof(uint32_t);
-    auto final_ptr = static_cast<char*>(ossp_malloc(final_len));
-    memmove(final_ptr + (sizeof(uint32_t)), c_data, comp_len);
+    auto final_ptr = static_cast<std::byte*>(ossp_malloc(final_len));
+    memcpy(final_ptr + (sizeof(uint32_t)), c_data, comp_len);
     ossp_free(c_data);
     ((uint32_t*)final_ptr)[0] = b_size;
 
     b_size = final_len;
     b_length = final_len;
     free_memory = true;
-    ptr = (std::byte*)final_ptr;
+    ptr = static_cast<std::byte*>(final_ptr);
     return true;
 }
 
 bool ByteBuffer::Uncompress() {
     auto decomp_len = (int)((uint32_t*)ptr)[0];
-    void* decomp_buf = static_cast<char*>(ossp_malloc(decomp_len));
-    void* data_start = ((char*)ptr) + sizeof(uint32_t);
+    void* decomp_buf = static_cast<std::byte*>(ossp_malloc(decomp_len));
+    void* data_start = static_cast<std::byte*>(ptr) + sizeof(uint32_t);
     int l = lzav_decompress(data_start, decomp_buf, b_size - sizeof(uint32_t), decomp_len);
     if (l < 0) {
         //problem?
@@ -112,8 +112,7 @@ bool ByteBuffer::AppendData(const void* data, size_t size) {
     }
     if (b_size + size > b_length) {
         if (b_length == 0) {
-            constexpr size_t MiB = 1024 * 1024;
-            b_length = MiB > size ? MiB : size;
+            b_length = size;
             b_size = 0;
             ptr = static_cast<std::byte*>(ossp_malloc(b_length));
             free_memory = true;
@@ -127,16 +126,15 @@ bool ByteBuffer::AppendData(const void* data, size_t size) {
             //as backup
             if (r_pointer == nullptr) {
                 auto new_ptr = ossp_malloc(new_length);
-                memmove(new_ptr, ptr, b_size);
+                memcpy(new_ptr, ptr, b_size);
                 ossp_free(ptr);
                 ptr = static_cast<std::byte*>(new_ptr);
             } else {
                 ptr = static_cast<std::byte*>(r_pointer);
             }
-            return true;
         }
     }
-    memmove((char*)ptr + b_size, data, size);
+    memcpy(static_cast<std::byte*>(ptr) + b_size, data, size);
     b_size = b_size + size;
     current_pos += size;
     return true;
@@ -147,7 +145,7 @@ bool ByteBuffer::SetDataAt(size_t pos, const void* data, size_t size) {
         return false;
     }
     if (pos + size < b_size) {
-        memmove((char*)ptr + pos, data, size);
+        memcpy(static_cast<std::byte*>(ptr) + pos, data, size);
         return true;
     }
     return false;
