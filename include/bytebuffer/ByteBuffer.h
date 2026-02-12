@@ -97,6 +97,11 @@ public:
     }
 
     template<typename T>
+    bool SetAt(size_t pos,const T* data, size_t size) {
+        return SetDataAt(pos, data, size);
+    }
+
+    template<typename T>
     bool SetAtWithEndian(size_t pos, T data, Endianness endian) {
         static_assert(std::is_arithmetic_v<T>, "T must be numeric");
         T converted;
@@ -128,7 +133,7 @@ public:
 
 private:
     bool AppendData(const void* data, size_t size);
-    bool SetDataAt(size_t pos, void* data, size_t size);
+    bool SetDataAt(size_t pos, const void* data, size_t size);
 };
 
 }

@@ -54,7 +54,7 @@ ReadBuffer::ReadBuffer(void* new_ptr, size_t size, bool copy) {
     read_only = true;
     if (copy) {
         ptr = (std::byte*)ossp_malloc(size);
-        memmove(ptr, new_ptr, size);
+        memcpy(ptr, new_ptr, size);
         b_size = size;
         b_length = size;
         free_memory = true;
@@ -103,7 +103,7 @@ ReadBuffer::ReadBuffer(const ReadBuffer& b) {
     b_size = b.b_size;
     b_length = b.b_size;
     ptr = (std::byte*)ossp_malloc(b_size);
-    memmove(ptr, b.ptr, b_size);
+    memcpy(ptr, b.ptr, b_size);
     current_pos = 0;
     current_read_pos = 0;
     free_memory = true;
@@ -130,7 +130,7 @@ ReadBuffer& ReadBuffer::operator=(const ReadBuffer& other) {
     if (other.ptr && other.b_size > 0) {
         ptr = (std::byte*)ossp_malloc(b_size);
         if (ptr) {
-            memmove(ptr, other.ptr, b_size);
+            memcpy(ptr, other.ptr, b_size);
         }
     } else {
         ptr = nullptr;
@@ -299,7 +299,7 @@ bool ReadBuffer::ReadStringAt(size_t pos, std::string* str, size_t size) {
 
 bool ReadBuffer::ReadData(void* data, size_t size) {
     if (current_read_pos + size <= b_size) {
-        memmove(data, (char*)ptr + current_read_pos, size);
+        memcpy(data, (std::byte*)ptr + current_read_pos, size);
         current_read_pos += size;
         return true;
     }
@@ -308,7 +308,7 @@ bool ReadBuffer::ReadData(void* data, size_t size) {
 
 bool ReadBuffer::ReadDataAt(size_t pos, void* data, size_t size) {
     if (pos + size <= b_size) {
-        memmove(data, (char*)ptr + pos, size);
+        memcpy(data, (std::byte*)ptr + pos, size);
         return true;
     }
     return false;
